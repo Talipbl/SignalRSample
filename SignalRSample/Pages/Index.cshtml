@@ -1,0 +1,25 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+</div>
+
+
+<script src="~/js/signalr/dist/browser/signalr.js"></script>
+<script>
+
+    window.onload = function () {
+        var connection = new signalR.HubConnectionBuilder().withUrl("https://localhost:7022/notification").build();
+        connection.start();
+
+        connection.on("receiveData", jsonData => {
+            console.log(jsonData);
+        });
+    }
+
+</script>
