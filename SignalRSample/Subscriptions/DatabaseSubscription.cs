@@ -19,17 +19,12 @@ namespace SignalRSample.Subscriptions
         public void Configure(string tableName)
         {
             _tableDependency = new SqlTableDependency<T>(_configuration.GetConnectionString("SQL"), tableName);
-            _tableDependency.OnChanged += (obj, e) =>
+            _tableDependency.OnChanged += (sender, e) =>
             {
 
             };
+            _tableDependency.OnError += (sender, e) => Console.WriteLine("Hata");
             _tableDependency.Start();
         }
-
-        ~DatabaseSubscription()
-        {
-            _tableDependency.Stop();
-        }
-
     }
 }

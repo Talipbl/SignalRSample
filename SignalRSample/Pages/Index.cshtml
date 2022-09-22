@@ -4,22 +4,62 @@
     ViewData["Title"] = "Home page";
 }
 
-<div class="text-center">
+<div class="text-center row">
     <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <div class="col-md-4">
+        <input type="text" class="form-control" id="message" />
+        <input type="button" class="btn btn-primary m-4" id="send" value="Send" />
+    </div>
+    <div class="col-md-4">
+        <input type="text" class="form-control" id="messageto" />
+        <input type="button" class="btn btn-primary m-4" id="sendto" value="Send" />
+    </div>
+    <div class="col-md-6">
+        <ul class="list-group" id="messagelist">
+        </ul>
+    </div>
+    <div class="col-md-6">
+        <ul class="list-group" id="notify">
+        </ul>
+    </div>
 </div>
 
 
 <script src="~/js/signalr/dist/browser/signalr.js"></script>
 <script>
-
+    var connection = new signalR.HubConnectionBuilder().withUrl("https://localhost:7022/notification").build();
     window.onload = function () {
-        var connection = new signalR.HubConnectionBuilder().withUrl("https://localhost:7022/notification").build();
         connection.start();
 
-        connection.on("receiveData", jsonData => {
-            console.log(jsonData);
+        connection.on("receiveMessage", message => {
+            var ul = document.querySelector('#messagelist');
+            ul.innerHTML += '<li class="list-group-item">' + message + '</li>'
+        });
+
+        connection.on("receiveNotify", notify => {
+            var ul = document.querySelector('#notify');
+            ul.innerHTML = '<li class="list-group-item">' + notify + '</li>'
+        });
+
+        document.querySelector('#send').addEventListener('click', function () {
+            var message = document.querySelector('#message').value;
+            connection.invoke("SendMessageAsync", message).catch(function (err) {
+                return console.error(err.toString());
+            });
+        });
+
+        document.querySelector('#sendto').addEventListener('click', function () {
+            var message = document.querySelector('#messageto').value;
+            connection.invoke("SendMessageAsync", message).catch(function (err) {
+                return console.error(err.toString());
+            });
         });
     }
+
+    let notifyTimer = setInterval(function(){
+        connection.invoke("SendNotificationAsync").catch(function (err) {
+                return console.error(err.toString());
+            });
+    },10000);
 
 </script>
