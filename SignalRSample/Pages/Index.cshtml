@@ -27,7 +27,7 @@
 
 <script src="~/js/signalr/dist/browser/signalr.js"></script>
 <script>
-    var connection = new signalR.HubConnectionBuilder().withUrl("https://localhost:7022/notification").build();
+    var connection = new signalR.HubConnectionBuilder().withUrl("/notification").build();
     window.onload = function () {
         connection.start();
 

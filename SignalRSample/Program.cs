@@ -1,14 +1,10 @@
 using SignalRSample.Hubs;
-using SignalRSample.Models;
-using SignalRSample.Subscriptions;
-using SignalRSample.Subscriptions.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddSignalR();
-builder.Services.AddSingleton<DatabaseSubscription<Notification>>();
 
 var app = builder.Build();
 
@@ -28,7 +24,6 @@ app.UseRouting();
 
 app.UseAuthorization();
 
-app.UseDatabaseSubscription<DatabaseSubscription<Notification>>("Notifications");
 app.UseEndpoints(endpoints =>
 {
     endpoints.MapHub<NotificationHub>("/notification");
